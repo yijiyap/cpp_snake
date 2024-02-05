@@ -1,5 +1,6 @@
 #include <iostream>
 #include <raylib.h>
+#include <raymath.h>
 #include <deque>
 
 Color pink = {255, 179, 203, 255};
@@ -12,6 +13,7 @@ class Dog
 {
 public:
     std::deque<Vector2> body = {Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
+    Vector2 direction = {1,0};
 
     void Draw()
     {
@@ -22,6 +24,12 @@ public:
             Rectangle segment = Rectangle{x*cellSize, y*cellSize, (float)cellSize, (float)cellSize};
             DrawRectangleRounded(segment, 0.5, 6, darkPink);
         }
+    }
+
+    void Update() // move the doggie
+    {
+        body.pop_back(); //remove the last part of the doggie
+        body.push_front(Vector2Add(body[0], direction)); // add it to the front of the doggie
     }
 };
 
@@ -68,6 +76,8 @@ int main()
     while(WindowShouldClose() == false)
     {
         BeginDrawing();
+
+        dog.Update();
 
         // Drawing
         ClearBackground(pink);
