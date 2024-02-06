@@ -95,6 +95,23 @@ int main()
             dog.Update();
         }
 
+        if (IsKeyPressed(KEY_UP) && dog.direction.y != 1)
+        {
+            dog.direction = {0,-1};
+        }
+        if (IsKeyPressed(KEY_DOWN) && dog.direction.y != -1)
+        {
+            dog.direction = {0,1};
+        }
+        if (IsKeyPressed(KEY_LEFT) && dog.direction.x != 1)
+        {
+            dog.direction = {-1,0};
+        }
+        if (IsKeyPressed(KEY_RIGHT) && dog.direction.x != -1)
+        {
+            dog.direction = {1,0};
+        }
+
         // Drawing
         ClearBackground(pink);
         food.Draw();
