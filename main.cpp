@@ -20,7 +20,6 @@ bool eventTriggered(double interval)
         return true;
     }
     return false;
-
 }
 
 class Dog
