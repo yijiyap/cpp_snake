@@ -9,6 +9,20 @@ Color darkPink = {112, 58, 75, 255};
 const int cellSize{30};
 const int cellCount{25};
 
+double lastUpdateTime{0}; // keep track last update time of the snake, to slow down the snake movement time
+
+bool eventTriggered(double interval)
+{
+    double currentTime = GetTime(); // time since the programme started running
+    if (currentTime - lastUpdateTime >= interval)
+    {
+        lastUpdateTime = currentTime;
+        return true;
+    }
+    return false;
+
+}
+
 class Dog
 {
 public:
@@ -77,7 +91,10 @@ int main()
     {
         BeginDrawing();
 
-        dog.Update();
+        if (eventTriggered(0.2)) // 
+        {
+            dog.Update();
+        }
 
         // Drawing
         ClearBackground(pink);
