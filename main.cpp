@@ -46,7 +46,8 @@ public:
     }
 };
 
-class Food {
+class Food 
+{
 public:
     Vector2 position;
     Texture2D texture;
@@ -77,14 +78,32 @@ public:
     }
 };
 
+class Game 
+{
+public:
+    Dog dog = Dog();
+    Food food = Food();
+
+    void Draw()
+    {
+        food.Draw();
+        dog.Draw();
+    }
+
+    void Update()
+    {
+        dog.Update();
+    }
+
+};
+
 int main()
 {
     std::cout << "Starting the game..." << std::endl;
     InitWindow(cellSize*cellCount, cellSize*cellCount, "Dog Snake");
     SetTargetFPS(60);
 
-    Food food = Food();
-    Dog dog = Dog();
+    Game game = Game();
 
     while(WindowShouldClose() == false)
     {
@@ -92,30 +111,29 @@ int main()
 
         if (eventTriggered(0.2)) // 
         {
-            dog.Update();
+            game.Update();
         }
 
-        if (IsKeyPressed(KEY_UP) && dog.direction.y != 1)
+        if (IsKeyPressed(KEY_UP) && game.dog.direction.y != 1)
         {
-            dog.direction = {0,-1};
+            game.dog.direction = {0,-1};
         }
-        if (IsKeyPressed(KEY_DOWN) && dog.direction.y != -1)
+        if (IsKeyPressed(KEY_DOWN) && game.dog.direction.y != -1)
         {
-            dog.direction = {0,1};
+            game.dog.direction = {0,1};
         }
-        if (IsKeyPressed(KEY_LEFT) && dog.direction.x != 1)
+        if (IsKeyPressed(KEY_LEFT) && game.dog.direction.x != 1)
         {
-            dog.direction = {-1,0};
+            game.dog.direction = {-1,0};
         }
-        if (IsKeyPressed(KEY_RIGHT) && dog.direction.x != -1)
+        if (IsKeyPressed(KEY_RIGHT) && game.dog.direction.x != -1)
         {
-            dog.direction = {1,0};
+            game.dog.direction = {1,0};
         }
 
         // Drawing
         ClearBackground(pink);
-        food.Draw();
-        dog.Draw();
+        game.Draw();
 
         EndDrawing();
     }
