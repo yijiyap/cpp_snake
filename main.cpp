@@ -8,7 +8,7 @@ Color darkPink = {112, 58, 75, 255};
 
 const int cellSize{30};
 const int cellCount{25};
-
+int offset = 75;
 
 double lastUpdateTime{0}; // keep track last update time of the dog, to slow down the dog movement time
 
@@ -51,7 +51,7 @@ public:
         {
             float x = body[i].x;
             float y = body[i].y;
-            Rectangle segment = Rectangle{x*cellSize, y*cellSize, (float)cellSize, (float)cellSize};
+            Rectangle segment = Rectangle{offset+x*cellSize, offset+y*cellSize, (float)cellSize, (float)cellSize};
             DrawRectangleRounded(segment, 0.5, 6, darkPink);
         }
     }
@@ -96,7 +96,7 @@ public:
 
     void Draw() 
     {
-      DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);  
+      DrawTexture(texture, offset+position.x * cellSize, offset+position.y * cellSize, WHITE);  
     }
 
     Vector2 GenerateRandomCell()
@@ -182,7 +182,7 @@ public:
 int main()
 {
     std::cout << "Starting the game..." << std::endl;
-    InitWindow(cellSize*cellCount, cellSize*cellCount, "Dog Snake");
+    InitWindow(2*offset+cellSize*cellCount, 2*offset+cellSize*cellCount, "Rover Snake");
     SetTargetFPS(60);
 
     Game game = Game();
@@ -219,6 +219,7 @@ int main()
 
         // Drawing
         ClearBackground(pink);
+        DrawRectangleLinesEx(Rectangle{(float)offset-5, (float)offset-5, (float)cellSize*cellCount+10, (float)cellSize*cellCount+10}, 5, darkPink);
         game.Draw();
 
         EndDrawing();
