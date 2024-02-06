@@ -9,6 +9,7 @@ Color darkPink = {112, 58, 75, 255};
 const int cellSize{30};
 const int cellCount{25};
 
+
 double lastUpdateTime{0}; // keep track last update time of the dog, to slow down the dog movement time
 
 bool ElementInDeque(Vector2 element, std::deque<Vector2> deque)
@@ -136,6 +137,7 @@ public:
             dog.Update();
             CheckAtFood();
             CheckAtEdge();
+            CheckAtBody();
         }
     }
 
@@ -153,6 +155,16 @@ public:
     void CheckAtEdge()
     {
         if(dog.body[0].x == cellCount || dog.body[0].x == -1 || dog.body[0].y == cellCount || dog.body[0].y == -1)
+        {
+            GameOver();
+        }
+    }
+
+    void CheckAtBody()
+    {
+        std::deque<Vector2> headlessBody = dog.body;
+        headlessBody.pop_front();
+        if (ElementInDeque(dog.body[0], headlessBody))
         {
             GameOver();
         }
