@@ -8,7 +8,8 @@ Color darkPink = {112, 58, 75, 255};
 
 const int cellSize{30};
 const int cellCount{25};
-int offset = 75;
+int offset{75};
+
 
 double lastUpdateTime{0}; // keep track last update time of the dog, to slow down the dog movement time
 
@@ -123,7 +124,8 @@ public:
     Dog dog = Dog();
     Food food = Food(dog.body);
     bool running = true;
-
+    int score{0};
+    
     void Draw()
     {
         food.Draw();
@@ -147,7 +149,7 @@ public:
         {
             food.position = food.GenerateRandomPos(dog.body); // change position of food
             dog.addSegment = true;
-            // add block to the front of the dog, and also stop the time
+            score++;
 
         }
     }
@@ -175,6 +177,7 @@ public:
         dog.Reset();
         food.position = food.GenerateRandomPos(dog.body);
         running = false;
+        score=0;
     }
 
 };
@@ -220,6 +223,8 @@ int main()
         // Drawing
         ClearBackground(pink);
         DrawRectangleLinesEx(Rectangle{(float)offset-5, (float)offset-5, (float)cellSize*cellCount+10, (float)cellSize*cellCount+10}, 5, darkPink);
+        DrawText("Rover Game", offset-5, 20, 40, darkPink);
+        DrawText(TextFormat("%i", game.score), offset-5, offset+cellSize*cellCount+10, 40, darkPink);
         game.Draw();
 
         EndDrawing();
