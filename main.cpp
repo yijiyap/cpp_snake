@@ -9,7 +9,22 @@ Color darkPink = {112, 58, 75, 255};
 const int cellSize{30};
 const int cellCount{25};
 
-double lastUpdateTime{0}; // keep track last update time of the snake, to slow down the snake movement time
+double lastUpdateTime{0}; // keep track last update time of the dog, to slow down the dog movement time
+
+bool ElementInDeque(Vector2 element, std::deque<Vector2> deque)
+{
+    // for (unsigned int i=0; i<deque.size(); i++)
+    // {
+    //     if (Vector2Equals(deque[i], element))
+    //         return true;
+    // }
+    for (const auto& n : deque)
+    {
+        if (Vector2Equals(n, element))
+            return true;
+    }
+    return false;
+}
 
 bool eventTriggered(double interval)
 {
@@ -52,12 +67,12 @@ public:
     Vector2 position;
     Texture2D texture;
 
-    Food()
+    Food(std::deque<Vector2> dogBody)
     {
         Image image = LoadImage("Sprites/food.png");
         texture = LoadTextureFromImage(image);
         UnloadImage(image);
-        position = GenerateRandomPos();
+        position = GenerateRandomPos(dogBody);
     }
 
     ~Food()
@@ -70,11 +85,21 @@ public:
       DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);  
     }
 
-    Vector2 GenerateRandomPos()
+    Vector2 GenerateRandomCell()
     {
-        float x = GetRandomValue(0, cellCount -1);
-        float y = GetRandomValue(0, cellCount -1);
-        return Vector2{x, y};
+        float x = GetRandomValue(0, cellCount-1);
+        float y = GetRandomValue(0, cellCount-1);
+        return Vector2{x,y};
+    }
+
+    Vector2 GenerateRandomPos(std::deque<Vector2> dogBody)
+    {
+        Vector2 position = GenerateRandomCell();
+        while (ElementInDeque(position, dogBody))
+        {
+            position = GenerateRandomCell();
+        }
+        return position;
     }
 };
 
@@ -82,7 +107,7 @@ class Game
 {
 public:
     Dog dog = Dog();
-    Food food = Food();
+    Food food = Food(dog.body);
 
     void Draw()
     {
@@ -93,6 +118,15 @@ public:
     void Update()
     {
         dog.Update();
+        CheckEatFood();
+    }
+
+    void CheckEatFood()
+    {
+        if(Vector2Equals(dog.body[0], food.position)) //[0] because that is the head of the dog
+        {
+            food.position = food.GenerateRandomPos(dog.body);
+        }
     }
 
 };
