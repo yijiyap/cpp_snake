@@ -42,6 +42,7 @@ class Dog
 public:
     std::deque<Vector2> body = {Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
     Vector2 direction = {1,0};
+    bool addSegment = false;
 
     void Draw()
     {
@@ -56,8 +57,20 @@ public:
 
     void Update() // move the doggie
     {
-        body.pop_back(); //remove the last part of the doggie
         body.push_front(Vector2Add(body[0], direction)); // add it to the front of the doggie
+        if (addSegment == true)
+        {
+            addSegment = false;
+        } else
+        {
+            body.pop_back(); //remove the last part of the doggie
+        }
+    }
+
+    void Reset()
+    {
+        body = {Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
+        direction = {1,0};
     }
 };
 
@@ -108,6 +121,7 @@ class Game
 public:
     Dog dog = Dog();
     Food food = Food(dog.body);
+    bool running = true;
 
     void Draw()
     {
@@ -117,16 +131,38 @@ public:
 
     void Update()
     {
-        dog.Update();
-        CheckEatFood();
+        if (running)
+        {
+            dog.Update();
+            CheckAtFood();
+            CheckAtEdge();
+        }
     }
 
-    void CheckEatFood()
+    void CheckAtFood()
     {
         if(Vector2Equals(dog.body[0], food.position)) //[0] because that is the head of the dog
         {
-            food.position = food.GenerateRandomPos(dog.body);
+            food.position = food.GenerateRandomPos(dog.body); // change position of food
+            dog.addSegment = true;
+            // add block to the front of the dog, and also stop the time
+
         }
+    }
+
+    void CheckAtEdge()
+    {
+        if(dog.body[0].x == cellCount || dog.body[0].x == -1 || dog.body[0].y == cellCount || dog.body[0].y == -1)
+        {
+            GameOver();
+        }
+    }
+
+    void GameOver()
+    {
+        dog.Reset();
+        food.position = food.GenerateRandomPos(dog.body);
+        running = false;
     }
 
 };
@@ -151,18 +187,22 @@ int main()
         if (IsKeyPressed(KEY_UP) && game.dog.direction.y != 1)
         {
             game.dog.direction = {0,-1};
+            game.running = true;
         }
         if (IsKeyPressed(KEY_DOWN) && game.dog.direction.y != -1)
         {
             game.dog.direction = {0,1};
+            game.running = true;
         }
         if (IsKeyPressed(KEY_LEFT) && game.dog.direction.x != 1)
         {
             game.dog.direction = {-1,0};
+            game.running = true;
         }
         if (IsKeyPressed(KEY_RIGHT) && game.dog.direction.x != -1)
         {
             game.dog.direction = {1,0};
+            game.running = true;
         }
 
         // Drawing
